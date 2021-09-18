@@ -1,0 +1,14 @@
+name: ST-AFK
+version: 2.0
+author: STuuDENT
+main: com.stuudent.AFK.AFKCore
+description: 자작 잠수 플러그인 created by STuuDENT
+
+commands:
+  잠수:
+    description: 플레이어에게 잠수포인트를 보여줍니다.
+  잠수관리:
+    permission: afk.admin
+    description: 플레이어의 잠수데이터를 설정합니다.
+
+softdepend: [PlaceholderAPI]
