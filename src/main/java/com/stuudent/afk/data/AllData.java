@@ -1,9 +1,9 @@
-package com.stuudent.AFK.data;
+package com.stuudent.afk.data;
 
-import com.stuudent.AFK.AFKCore;
-import com.stuudent.AFK.enums.DisabledType;
-import com.stuudent.AFK.event.AFKDisable;
-import com.stuudent.AFK.event.AFKEnable;
+import com.stuudent.afk.AFKCore;
+import com.stuudent.afk.enums.DisabledType;
+import com.stuudent.afk.event.AFKDisableEvent;
+import com.stuudent.afk.event.AFKEnableEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 
-public class AFKData {
+public class AllData {
 
     public static File configFile;
     public static File tempFile;
@@ -66,7 +66,7 @@ public class AFKData {
     // 잠수 활성화/비활성화 메소드
 
     public void enableAFK(Player afkPlayer, boolean showTitle) {
-        AFKEnable event = new AFKEnable(afkPlayer);
+        AFKEnableEvent event = new AFKEnableEvent(afkPlayer);
         Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
@@ -78,7 +78,7 @@ public class AFKData {
     }
 
     public void disableAFK(Player afkPlayer, DisabledType reason, boolean showTitle) {
-        AFKDisable event = new AFKDisable(afkPlayer, reason);
+        AFKDisableEvent event = new AFKDisableEvent(afkPlayer, reason);
         Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;

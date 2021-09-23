@@ -1,9 +1,9 @@
-package com.stuudent.AFK.commands;
+package com.stuudent.afk.commands;
 
-import com.stuudent.AFK.AFKAPI;
-import com.stuudent.AFK.AFKCore;
-import com.stuudent.AFK.data.AFKData;
-import com.stuudent.AFK.data.AFKPlayer;
+import com.stuudent.afk.AFKAPI;
+import com.stuudent.afk.AFKCore;
+import com.stuudent.afk.data.AllData;
+import com.stuudent.afk.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -45,16 +45,16 @@ public class AdminCommand implements TabExecutor {
             try {
                 //noinspection deprecation
                 OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
-                AFKPlayer afkPlayer = AFKAPI.getPlayer(targetPlayer);
-                AFKData afkData = AFKAPI.getData();
+                PlayerData playerData = AFKAPI.getPlayer(targetPlayer);
+                AllData allData = AFKAPI.getData();
                 int point = Integer.parseInt(args[2]);
                 if(point < 0) {
                     player.sendMessage(errorMessage);
                     return false;
                 }
                 if(args[0].equals("지급")) {
-                    afkPlayer.addPoint(point);
-                    afkData.save();
+                    playerData.addPoint(point);
+                    allData.save();
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("AddMessage.ForAdmin", "")
                             .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(point))));
                     if(targetPlayer.isOnline()) {
@@ -65,8 +65,8 @@ public class AdminCommand implements TabExecutor {
                     return false;
                 }
                 if(args[0].equals("차감")) {
-                    afkPlayer.removePoint(point);
-                    afkData.save();
+                    playerData.removePoint(point);
+                    allData.save();
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("RemoveMessage.ForAdmin", "")
                             .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(point))));
                     if(targetPlayer.isOnline()) {
@@ -77,8 +77,8 @@ public class AdminCommand implements TabExecutor {
                     return false;
                 }
                 if(args[0].equals("설정")) {
-                    afkPlayer.setPoint(point);
-                    afkData.save();
+                    playerData.setPoint(point);
+                    allData.save();
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("SetMessage.ForAdmin", "")
                             .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(point))));
                     if(targetPlayer.isOnline()) {
@@ -106,9 +106,9 @@ public class AdminCommand implements TabExecutor {
             }
             //noinspection deprecation
             OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
-            AFKPlayer afkPlayer = AFKAPI.getPlayer(targetPlayer);
+            PlayerData playerData = AFKAPI.getPlayer(targetPlayer);
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("SearchMessage.ForAdmin", "")
-                    .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(afkPlayer.getPoint()))));
+                    .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(playerData.getPoint()))));
             return false;
         }
         player.sendMessage(errorMessage);

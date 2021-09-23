@@ -1,8 +1,8 @@
-package com.stuudent.AFK.commands;
+package com.stuudent.afk.commands;
 
-import com.stuudent.AFK.AFKAPI;
-import com.stuudent.AFK.AFKCore;
-import com.stuudent.AFK.data.AFKPlayer;
+import com.stuudent.afk.AFKAPI;
+import com.stuudent.afk.AFKCore;
+import com.stuudent.afk.data.PlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,9 +20,9 @@ public class UserCommand implements TabExecutor {
         if(!(sender instanceof Player))
             return false;
         Player player = (Player) sender;
-        AFKPlayer afkPlayer = AFKAPI.getPlayer(player);
+        PlayerData playerData = AFKAPI.getPlayer(player);
         String userMessage = AFKCore.cf.getString("UserMessage", null);
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', userMessage.replace("[POINT]", String.valueOf(afkPlayer.getPoint()))));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', userMessage.replace("[POINT]", String.valueOf(playerData.getPoint()))));
         return false;
     }
 

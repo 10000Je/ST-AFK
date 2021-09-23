@@ -1,15 +1,13 @@
-package com.stuudent.AFK.event;
+package com.stuudent.afk.event;
 
-import com.stuudent.AFK.enums.DisabledType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class AFKDisable extends Event implements Cancellable {
+public class AFKEnableEvent extends Event implements Cancellable {
 
     public boolean cancelled;
-    public DisabledType reason;
     public Player afkPlayer;
     public static HandlerList handlers;
 
@@ -17,12 +15,8 @@ public class AFKDisable extends Event implements Cancellable {
         handlers = new HandlerList();
     }
 
-    public AFKDisable(Player afkPlayer, DisabledType reason) {
+    public AFKEnableEvent(Player afkPlayer) {
         this.afkPlayer = afkPlayer;
-    }
-
-    public DisabledType getReason() {
-        return this.reason;
     }
 
     public Player getPlayer() {

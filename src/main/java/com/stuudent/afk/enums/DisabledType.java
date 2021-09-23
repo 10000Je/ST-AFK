@@ -1,4 +1,4 @@
-package com.stuudent.AFK.enums;
+package com.stuudent.afk.enums;
 
 public enum DisabledType {
     COMMAND, CHAT, MOVEMENT, JOIN, QUIT, DEATH

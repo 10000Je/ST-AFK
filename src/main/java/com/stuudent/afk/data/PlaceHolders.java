@@ -1,11 +1,11 @@
-package com.stuudent.AFK.data;
+package com.stuudent.afk.data;
 
-import com.stuudent.AFK.AFKAPI;
+import com.stuudent.afk.AFKAPI;
 import com.sun.istack.internal.NotNull;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
-public class AFKHolders extends PlaceholderExpansion {
+public class PlaceHolders extends PlaceholderExpansion {
 
     @Override
     public @NotNull
@@ -38,15 +38,15 @@ public class AFKHolders extends PlaceholderExpansion {
         if(player == null)
             return null;
 
-        AFKPlayer afkPlayer = AFKAPI.getPlayer(player);
+        PlayerData playerData = AFKAPI.getPlayer(player);
         if(params.equals("point"))
-            return String.valueOf(afkPlayer.getPoint());
+            return String.valueOf(playerData.getPoint());
 
         if(params.equals("state"))
-            return String.valueOf(afkPlayer.isEnabled());
+            return String.valueOf(playerData.isEnabled());
 
         if(params.equals("time"))
-            return String.valueOf(afkPlayer.getTime());
+            return String.valueOf(playerData.getTime());
 
         return null;
     }

@@ -1,11 +1,11 @@
-package com.stuudent.AFK;
+package com.stuudent.afk;
 
-import com.stuudent.AFK.commands.AdminCommand;
-import com.stuudent.AFK.commands.UserCommand;
-import com.stuudent.AFK.data.AFKData;
-import com.stuudent.AFK.data.AFKHolders;
-import com.stuudent.AFK.data.AFKPlayer;
-import com.stuudent.AFK.listeners.DetectAction;
+import com.stuudent.afk.commands.AdminCommand;
+import com.stuudent.afk.commands.UserCommand;
+import com.stuudent.afk.data.AllData;
+import com.stuudent.afk.data.PlaceHolders;
+import com.stuudent.afk.data.PlayerData;
+import com.stuudent.afk.listeners.DetectAction;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -25,26 +25,26 @@ public final class AFKCore extends JavaPlugin {
         setCommandExecutors();
         //noinspection deprecation
         Bukkit.getScheduler().scheduleAsyncRepeatingTask(instance, () -> {
-            AFKData afkData = AFKAPI.getData();
+            AllData allData = AFKAPI.getData();
             for(Player player : Bukkit.getOnlinePlayers()) {
-                AFKPlayer afkPlayer = AFKAPI.getPlayer(player);
-                if(afkPlayer.isEnabled()) {
-                    afkPlayer.increaseTime();
-                    if(afkPlayer.getTime() % cf.getInt("AFKPeriod", 60) == 0) {
-                        afkPlayer.addPoint(1);
-                        afkData.save();
+                PlayerData playerData = AFKAPI.getPlayer(player);
+                if(playerData.isEnabled()) {
+                    playerData.increaseTime();
+                    if(playerData.getTime() % cf.getInt("AFKPeriod", 60) == 0) {
+                        playerData.addPoint(1);
+                        allData.save();
                     }
-                    afkPlayer.sendTitle(true, 0);
+                    playerData.sendTitle(true, 0);
                 } else {
-                    afkPlayer.increaseReadyTime();
-                    if(afkPlayer.isReady()) {
-                        afkPlayer.enableAFK(true);
+                    playerData.increaseReadyTime();
+                    if(playerData.isReady()) {
+                        playerData.enableAFK(true);
                     }
                 }
             }
         }, 0, 20);
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new AFKHolders().register();
+            new PlaceHolders().register();
         } else {
             Bukkit.getConsoleSender().sendMessage("§6ST-§9AFK§ §ev" + getDescription().getVersion() + " §cPlaceholderAPI 플러그인이 존재하지 않습니다. Placeholder 기능은 사용할 수 없습니다.");
         }
@@ -53,8 +53,8 @@ public final class AFKCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        AFKData afkData = AFKAPI.getData();
-        afkData.save();
+        AllData allData = AFKAPI.getData();
+        allData.save();
         Bukkit.getConsoleSender().sendMessage("§6ST-§9AFK §ev" + getDescription().getVersion() + " §c플러그인이 비활성화 되었습니다. §f(created by STuuDENT, Discord 민제#5894)");
     }
 
