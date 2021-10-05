@@ -6,7 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class AFKDisableEvent extends Event implements Cancellable {
+public class AfkDisableEvent extends Event implements Cancellable {
 
     public boolean cancelled;
     public DisabledType reason;
@@ -17,8 +17,9 @@ public class AFKDisableEvent extends Event implements Cancellable {
         handlers = new HandlerList();
     }
 
-    public AFKDisableEvent(Player afkPlayer, DisabledType reason) {
+    public AfkDisableEvent(Player afkPlayer, DisabledType reason) {
         this.afkPlayer = afkPlayer;
+        this.reason = reason;
     }
 
     public DisabledType getReason() {

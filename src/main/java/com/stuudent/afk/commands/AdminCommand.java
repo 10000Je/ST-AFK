@@ -1,9 +1,9 @@
 package com.stuudent.afk.commands;
 
-import com.stuudent.afk.AFKAPI;
-import com.stuudent.afk.AFKCore;
-import com.stuudent.afk.data.AllData;
+import com.stuudent.afk.AfkAPI;
+import com.stuudent.afk.AfkCore;
 import com.stuudent.afk.data.PlayerData;
+import com.stuudent.afk.interfaces.AfkPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -25,9 +25,9 @@ public class AdminCommand implements TabExecutor {
         if(!(sender instanceof Player))
             return false;
         Player player = (Player) sender;
-        String errorMessage = ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("CommandError", ""));
+        String errorMessage = ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("CommandError", ""));
         if(args.length == 0) {
-            for(String text : AFKCore.cf.getStringList("AdminMessage")) {
+            for(String text : AfkCore.cf.getStringList("AdminMessage")) {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', text));
             }
             return false;
@@ -45,46 +45,42 @@ public class AdminCommand implements TabExecutor {
             try {
                 //noinspection deprecation
                 OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
-                PlayerData playerData = AFKAPI.getPlayer(targetPlayer);
-                AllData allData = AFKAPI.getData();
+                AfkPlayer afkPlayer = AfkAPI.getPlayer(targetPlayer);
                 int point = Integer.parseInt(args[2]);
                 if(point < 0) {
                     player.sendMessage(errorMessage);
                     return false;
                 }
                 if(args[0].equals("지급")) {
-                    playerData.addPoint(point);
-                    allData.save();
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("AddMessage.ForAdmin", "")
-                            .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(point))));
+                    afkPlayer.addPoint(point);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("AddMessage.ForAdmin", "")
+                            .replace("%afk_player%", targetPlayer.getName()).replace("%afk_point%", String.valueOf(point))));
                     if(targetPlayer.isOnline()) {
                         Player onlineTarget = targetPlayer.getPlayer();
-                        onlineTarget.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("AddMessage.ForUser", "")
-                                .replace("[POINT]", String.valueOf(point))));
+                        onlineTarget.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("AddMessage.ForUser", "")
+                                .replace("%afk_point%", String.valueOf(point))));
                     }
                     return false;
                 }
                 if(args[0].equals("차감")) {
-                    playerData.removePoint(point);
-                    allData.save();
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("RemoveMessage.ForAdmin", "")
-                            .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(point))));
+                    afkPlayer.removePoint(point);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("RemoveMessage.ForAdmin", "")
+                            .replace("%afk_player%", targetPlayer.getName()).replace("%afk_point%", String.valueOf(point))));
                     if(targetPlayer.isOnline()) {
-                        Player onlineTarget = (Player) targetPlayer;
-                        onlineTarget.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("RemoveMessage.ForUser", "")
-                                .replace("[POINT]", String.valueOf(point))));
+                        Player onlineTarget = targetPlayer.getPlayer();
+                        onlineTarget.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("RemoveMessage.ForUser", "")
+                                .replace("%afk_point%", String.valueOf(point))));
                     }
                     return false;
                 }
                 if(args[0].equals("설정")) {
-                    playerData.setPoint(point);
-                    allData.save();
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("SetMessage.ForAdmin", "")
-                            .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(point))));
+                    afkPlayer.setPoint(point);
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("SetMessage.ForAdmin", "")
+                            .replace("%afk_player%", targetPlayer.getName()).replace("%afk_point%", String.valueOf(point))));
                     if(targetPlayer.isOnline()) {
                         Player onlineTarget = (Player) targetPlayer;
-                        onlineTarget.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("SetMessage.ForUser", "")
-                                .replace("[POINT]", String.valueOf(point))));
+                        onlineTarget.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("SetMessage.ForUser", "")
+                                .replace("%afk_point%", String.valueOf(point))));
                     }
                     return false;
                 }
@@ -106,9 +102,20 @@ public class AdminCommand implements TabExecutor {
             }
             //noinspection deprecation
             OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
-            PlayerData playerData = AFKAPI.getPlayer(targetPlayer);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AFKCore.cf.getString("SearchMessage.ForAdmin", "")
-                    .replace("[PLAYER]", targetPlayer.getName()).replace("[POINT]", String.valueOf(playerData.getPoint()))));
+            AfkPlayer afkPlayer = AfkAPI.getPlayer(targetPlayer);
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("SearchMessage.ForAdmin", "")
+                    .replace("%afk_player%", targetPlayer.getName()).replace("%afk_point%", String.valueOf(afkPlayer.getPoint()))));
+            return false;
+        }
+        if(args[0].equals("리로드")) {
+            AfkCore.instance.reloadConfig();
+            AfkCore.cf = AfkCore.instance.getConfig();
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("ReloadMessage")));
+            return false;
+        }
+        if(args[0].equals("저장")) {
+            PlayerData.save();
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("SaveMessage")));
             return false;
         }
         player.sendMessage(errorMessage);
@@ -121,7 +128,7 @@ public class AdminCommand implements TabExecutor {
             return null;
         if(!(sender instanceof Player))
             return null;
-        List<String> subCommands = Arrays.asList("지급", "차감", "설정", "확인");
+        List<String> subCommands = Arrays.asList("지급", "차감", "설정", "확인", "리로드", "저장");
         if(args.length == 1) {
             List<String> available = new ArrayList<>();
             for(String text : subCommands) {

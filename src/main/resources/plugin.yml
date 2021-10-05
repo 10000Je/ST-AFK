@@ -1,7 +1,7 @@
 name: ST-AFK
 version: 2.0
 author: STuuDENT
-main: com.stuudent.afk.AFKCore
+main: com.stuudent.afk.AfkCore
 description: 자작 잠수 플러그인 created by STuuDENT
 
 commands:

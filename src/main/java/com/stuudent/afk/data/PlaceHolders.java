@@ -1,16 +1,16 @@
 package com.stuudent.afk.data;
 
-import com.stuudent.afk.AFKAPI;
-import com.sun.istack.internal.NotNull;
+import com.stuudent.afk.AfkAPI;
+import com.stuudent.afk.interfaces.AfkPlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class PlaceHolders extends PlaceholderExpansion {
 
     @Override
-    public @NotNull
-    String getIdentifier() {
-        return "afk";
+    public @NotNull String getIdentifier() {
+        return "stafk";
     }
 
     @Override
@@ -24,30 +24,23 @@ public class PlaceHolders extends PlaceholderExpansion {
     }
 
     @Override
-    public boolean canRegister() {
-        return true;
-    }
-
-    @Override
-    public boolean persist() {
-        return true;
-    }
-
-    @Override
-    public String onPlaceholderRequest(Player player, @NotNull String params) {
+    public String onRequest(OfflinePlayer player, @NotNull String params) {
         if(player == null)
             return null;
-
-        PlayerData playerData = AFKAPI.getPlayer(player);
-        if(params.equals("point"))
-            return String.valueOf(playerData.getPoint());
-
-        if(params.equals("state"))
-            return String.valueOf(playerData.isEnabled());
-
-        if(params.equals("time"))
-            return String.valueOf(playerData.getTime());
-
-        return null;
+        AfkPlayer afkPlayer = AfkAPI.getPlayer(player);
+        switch(params) {
+            case "point":
+                return String.valueOf(afkPlayer.getPoint());
+            case "state":
+                if(afkPlayer.isEnabled())
+                    return "켜짐";
+                else
+                    return "꺼짐";
+            case "time":
+                return String.valueOf(afkPlayer.getTime());
+            default:
+                return null;
+        }
     }
+
 }

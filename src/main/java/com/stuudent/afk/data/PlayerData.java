@@ -1,94 +1,137 @@
 package com.stuudent.afk.data;
 
-import com.stuudent.afk.enums.DisabledType;
+import com.stuudent.afk.AfkCore;
+import com.stuudent.afk.enums.TitleType;
+import com.stuudent.afk.interfaces.AfkPlayer;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class PlayerData {
+import java.io.File;
+import java.io.IOException;
+
+public class PlayerData implements AfkPlayer {
+
+    public static File afkDataFile;
+    public static YamlConfiguration afkData;
+    public static YamlConfiguration tempData;
 
     public OfflinePlayer afkPlayer;
-    public AllData allData;
+
+    static {
+        afkDataFile = new File("plugins/" + AfkCore.instance.getName() + "/afkData.yml");
+        afkData = YamlConfiguration.loadConfiguration(afkDataFile);
+        tempData = new YamlConfiguration();
+    }
+
+    public static void save(){
+        try {
+            afkData.save(afkDataFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public PlayerData(Player afkPlayer) {
         this.afkPlayer = afkPlayer;
-        this.allData = new AllData();
     }
 
     public PlayerData(OfflinePlayer afkPlayer) {
         this.afkPlayer = afkPlayer;
-        this.allData = new AllData();
     }
 
-    public void resetTime() {
-        this.allData.resetTime(this.afkPlayer.getPlayer());
-    }
-
+    @Override
     public int getTime() {
-        return this.allData.getTime(this.afkPlayer.getPlayer());
+        return tempData.getInt(this.afkPlayer.getUniqueId() + ".TIME", 0);
     }
 
+    @Override
+    public void resetTime() {
+        tempData.set(this.afkPlayer.getUniqueId() + ".TIME", 0);
+    }
+
+    @Override
     public boolean isEnabled() {
-        return this.allData.isEnabled(this.afkPlayer.getPlayer());
+        return tempData.getBoolean(this.afkPlayer.getUniqueId() + ".STATE", false);
     }
 
-    // POINT 메소드
-
+    @Override
     public int getPoint() {
-        return this.allData.getPoint(this.afkPlayer);
+        return afkData.getInt(this.afkPlayer.getUniqueId().toString(), 0);
     }
 
+    @Override
     public void addPoint(int value) {
-        allData.addPoint(this.afkPlayer, value);
+        setPoint(getPoint() + value);
     }
 
+    @Override
     public void removePoint(int value) {
-        allData.removePoint(this.afkPlayer, value);
+        setPoint(Math.max(getPoint() - value, 0));
     }
 
+    @Override
     public void setPoint(int value) {
-        allData.setPoint(this.afkPlayer, value);
+        afkData.set(this.afkPlayer.getUniqueId().toString(), value);
     }
 
-    // 잠수 활성화/비활성화 메소드
-
-    public void enableAFK(boolean showTitle) {
-        allData.enableAFK(this.afkPlayer.getPlayer(), showTitle);
+    @Override
+    public void setState(boolean state) {
+        tempData.set(this.afkPlayer.getUniqueId() + ".STATE", state);
     }
 
-    public void disableAFK(boolean showTitle, DisabledType reason) {
-        allData.disableAFK(this.afkPlayer.getPlayer(), reason, showTitle);
-    }
-
+    @Override
     public boolean isReady() {
-        return allData.isReady(this.afkPlayer.getPlayer());
+        return tempData.getInt(afkPlayer.getUniqueId() + ".READYTIME", 0) >= AfkCore.cf.getInt("AfkStart", 60);
     }
 
+    @Override
     public void increaseReadyTime() {
-        allData.increaseReadyTime(this.afkPlayer.getPlayer());
+        tempData.set(afkPlayer.getUniqueId() + ".READYTIME", tempData.getInt(afkPlayer.getUniqueId() + ".READYTIME", 0) + 1);
     }
 
+    @Override
     public void resetReadyTime() {
-        allData.resetReadyTime(this.afkPlayer.getPlayer());
+        tempData.set(this.afkPlayer.getUniqueId() + ".READYTIME", null);
     }
 
+    @Override
     public void increaseTime() {
-        allData.increaseTime(this.afkPlayer.getPlayer());
+        tempData.set(this.afkPlayer.getUniqueId() + ".TIME", getTime() + 1);
+    }
+
+    @Override
+    public String getTitleFormat(TitleType titleType) {
+        int receivedPoint = (int) Math.floor(getTime() / 60); String targetString;
+        if(titleType.equals(TitleType.ENABLED_TITLE)) {
+            targetString = ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("TitleFormat.Enabled.Title", ""));
+        }
+        else if(titleType.equals(TitleType.ENABLED_SUBTITLE)) {
+            targetString = ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("TitleFormat.Enabled.SubTitle", ""));
+        }
+        else if(titleType.equals(TitleType.DISABLED_TITLE)) {
+            targetString = ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("TitleFormat.Disabled.Title", ""));
+        }
+        else if(titleType.equals(TitleType.DISABLED_SUBTITLE)) {
+            targetString = ChatColor.translateAlternateColorCodes('&', AfkCore.cf.getString("TitleFormat.Disabled.SubTitle", ""));
+        }
+        else {
+            return null;
+        }
+        return targetString.replace("%afk_hour%", getHour()).replace("%afk_minute%", getMinute()).replace("%afk_second%", getSecond())
+                .replace("%afk_point%", String.valueOf(getPoint())).replace("%received_point%", String.valueOf(receivedPoint));
     }
 
     public String getHour() {
-        return allData.getHour(this.afkPlayer.getPlayer());
+        return (Math.floor(getTime() / 3600) < 10) ? "0" + (int) Math.floor(getTime() / 3600) : String.valueOf((int) Math.floor(getTime() / 3600));
     }
 
     public String getMinute() {
-        return allData.getMinute(this.afkPlayer.getPlayer());
+        return (Math.floor(getTime() % 3600 / 60) < 10) ? "0" + (int) Math.floor(getTime() % 3600 / 60) : String.valueOf((int) Math.floor(getTime() % 3600 / 60));
     }
 
     public String getSecond() {
-        return allData.getSecond(this.afkPlayer.getPlayer());
+        return (Math.floor(getTime() % 3600 % 60) < 10) ? "0" + (int) Math.floor(getTime() % 3600 % 60) : String.valueOf((int) Math.floor(getTime() % 3600 % 60));
     }
-
-    public void sendTitle(boolean isEnabled, int fading) {
-        allData.sendTitle(this.afkPlayer.getPlayer(), isEnabled, fading);
-    }
-
 }

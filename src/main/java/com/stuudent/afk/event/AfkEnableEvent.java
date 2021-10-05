@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class AFKEnableEvent extends Event implements Cancellable {
+public class AfkEnableEvent extends Event implements Cancellable {
 
     public boolean cancelled;
     public Player afkPlayer;
@@ -15,7 +15,7 @@ public class AFKEnableEvent extends Event implements Cancellable {
         handlers = new HandlerList();
     }
 
-    public AFKEnableEvent(Player afkPlayer) {
+    public AfkEnableEvent(Player afkPlayer) {
         this.afkPlayer = afkPlayer;
     }
 
