@@ -20,9 +20,9 @@ public class DetectAction implements Listener {
             AfkDisableEvent event = new AfkDisableEvent(e.getPlayer(), DisabledType.JOIN);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) return;
+            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
             afkPlayer.setState(false);
             afkPlayer.resetTime();
-            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
         } else {
             afkPlayer.resetReadyTime();
         }
@@ -51,9 +51,9 @@ public class DetectAction implements Listener {
             AfkDisableEvent event = new AfkDisableEvent(e.getEntity().getPlayer(), DisabledType.DEATH);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) return;
+            e.getEntity().getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
             afkPlayer.setState(false);
             afkPlayer.resetTime();
-            e.getEntity().getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
         } else {
             afkPlayer.resetReadyTime();
         }
@@ -66,9 +66,9 @@ public class DetectAction implements Listener {
             AfkDisableEvent event = new AfkDisableEvent(e.getPlayer(), DisabledType.MOVEMENT);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) return;
+            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
             afkPlayer.setState(false);
             afkPlayer.resetTime();
-            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
         } else {
             afkPlayer.resetReadyTime();
         }
@@ -81,9 +81,9 @@ public class DetectAction implements Listener {
             AfkDisableEvent event = new AfkDisableEvent(e.getPlayer(), DisabledType.CHAT);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) return;
+            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
             afkPlayer.setState(false);
             afkPlayer.resetTime();
-            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
         } else {
             afkPlayer.resetReadyTime();
         }
@@ -96,9 +96,9 @@ public class DetectAction implements Listener {
             AfkDisableEvent event = new AfkDisableEvent(e.getPlayer(), DisabledType.COMMAND);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) return;
+            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
             afkPlayer.setState(false);
             afkPlayer.resetTime();
-            e.getPlayer().sendTitle(afkPlayer.getTitleFormat(TitleType.DISABLED_TITLE), afkPlayer.getTitleFormat(TitleType.ENABLED_SUBTITLE), 0, 40, 20);
         } else {
             afkPlayer.resetReadyTime();
         }

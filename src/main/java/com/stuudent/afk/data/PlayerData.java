@@ -123,6 +123,11 @@ public class PlayerData implements AfkPlayer {
                 .replace("%afk_point%", String.valueOf(getPoint())).replace("%received_point%", String.valueOf(receivedPoint));
     }
 
+    @Override
+    public OfflinePlayer getBukkitPlayer() {
+        return this.afkPlayer;
+    }
+
     public String getHour() {
         return (Math.floor(getTime() / 3600) < 10) ? "0" + (int) Math.floor(getTime() / 3600) : String.valueOf((int) Math.floor(getTime() / 3600));
     }

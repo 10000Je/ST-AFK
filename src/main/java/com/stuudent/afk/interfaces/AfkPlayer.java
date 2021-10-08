@@ -1,6 +1,7 @@
 package com.stuudent.afk.interfaces;
 
 import com.stuudent.afk.enums.TitleType;
+import org.bukkit.OfflinePlayer;
 
 public interface AfkPlayer {
 
@@ -69,5 +70,10 @@ public interface AfkPlayer {
      * @return returns formatted String.
      */
     String getTitleFormat(TitleType titleType);
+
+    /**
+     * @return returns Bukkit Player.
+     */
+    OfflinePlayer getBukkitPlayer();
 
 }
